@@ -1,0 +1,14 @@
+
+
+@BaseUrl=https://www.tabnews.com.br/api/v1
+
+GET {{BaseUrl}}/contents?page=1&per_page=100
+
+
+###
+
+GET {{BaseUrl}}/contents/inacio000/e-se-eu-te-contar-como-desenvolvi-uma-solucao-recentemente-no-meu-dormitorio-usando-nodejs-e-reactjs
+
+###
+
+GET {{BaseUrl}}/contents/{user}/{slug}
