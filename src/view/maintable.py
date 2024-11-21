@@ -1,9 +1,8 @@
-import os
 import logging
-import json
-import requests
 from PyQt5 import QtWidgets, QtGui 
 from PyQt5.QtCore import Qt, QSize
+from view.main_side_description import MyPostContent
+from model.model import MainPageContent
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -12,29 +11,22 @@ logging.basicConfig(
 )
 
 class MyTable(QtWidgets.QTableView):
-    def __init__(self, parent: QtWidgets.QWidget | None = ...) -> None:
+    def __init__(self, parent: QtWidgets.QWidget | None = ..., parent_mainwindow:QtWidgets.QMainWindow = None) -> None:
         super(MyTable, self).__init__(parent)
 
-        self.important_columns = ["title", "status", "created_at", "updated_at", "owner_username"]
+        self.parent_mainwindow = parent_mainwindow
+        self.important_columns = ["title", "status", "created_at", "updated_at", "owner_username", "slug"]
         self.model:QtGui.QStandardItemModel = QtGui.QStandardItemModel(0, 0)
+        self.description_widget:QtWidgets.QWidget = None
         self.setModel(self.model)
         self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self.load_data(False)
 
     def load_data(self, all_columns:bool = True):
-        # response = requests.get("../mockdata/content.json")
-        # response = requests.get("https://www.tabnews.com.br/api/v1/contents?page=1&per_page=100")
-        # lines = response.json()
-        try:
-            current_directory = os.path.dirname(os.path.abspath(__file__))
-            with open( f"{current_directory}../../mockdata/content.json", encoding="utf8") as file:
-                lines = json.load(file)
-            if len(lines) == 0:
-                logging.debug("no data on the file")
-                return
-        except FileNotFoundError:
-            logging.debug("File not found")
+        content = MainPageContent()
+        lines = content.operation()
+        if len(lines) == 0:
             return
 
         column_names = [colname for colname in lines[0].keys()  
@@ -63,9 +55,15 @@ class MyTable(QtWidgets.QTableView):
         indexes = self.selectedIndexes()
         if len(indexes) == 1:
             index = indexes[0]
-            self.parent.centralWidget().layout().addWidget()
-            pass
-
+            layout = self.parent_mainwindow.centralWidget().layout()
+            if self.description_widget:
+                layout.removeWidget(self.description_widget)
+            
+            slug = index.siblingAtColumn(0).data(Qt.DisplayRole)
+            user = index.siblingAtColumn(5).data(Qt.DisplayRole)
+            self.description_widget = MyPostContent(self) 
+            self.description_widget.setContent(user, slug)
+            layout.addWidget(self.description_widget)
 
         return super().mouseDoubleClickEvent(e)
 

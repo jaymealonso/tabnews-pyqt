@@ -15,7 +15,7 @@ def main():
     container = QWidget(window_main)
     container.setLayout(layout)
 
-    table = MyTable(window_main)
+    table = MyTable(window_main, window_main)
     toolbar = MyToolbar(table)
 
     layout.addWidget(toolbar)
