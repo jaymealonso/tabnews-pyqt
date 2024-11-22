@@ -7,6 +7,7 @@ class MyPostContent(QtWidgets.QWidget):
 
         self.layout:QtWidgets.QBoxLayout = QtWidgets.QVBoxLayout()
         self.text_browser = QtWidgets.QTextBrowser()
+        self.text_browser.zoomIn(3)
         self.layout.addWidget(self.text_browser)
         self.setLayout(self.layout)
 
@@ -14,5 +15,7 @@ class MyPostContent(QtWidgets.QWidget):
     def setContent(self, user:str, slug:str):
         content = PostDescription(user, slug)
         post = content.operation()
-        self.text_browser.setText(post.get("body"))
+        if post:
+            self.text_browser.setText(post.get("body"))
+            
 

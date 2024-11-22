@@ -25,12 +25,25 @@ class TargetData():
     def op_remote(self) -> list:
         response = requests.get(f"{TargetData.BASE_URL}{self.url_complement}")
         json_content = response.json()
+        self.write_file(json.dumps(json_content))
         return json_content
+
+    def write_file(self, content: str):
+        try:
+            current_directory = os.path.dirname(os.path.abspath(__file__))
+            file_fullpath = f"{current_directory}/{TargetData.MOCK_PATH}/{self.mock_complement}"
+            file = open(file_fullpath, "w", encoding="utf8")
+            file.write(content)
+        except Exception as e:
+            logging.error(f"Error {e}")
+
 
     def op_mock(self) -> list:
         try:
             current_directory = os.path.dirname(os.path.abspath(__file__))
-            with open( f"{current_directory}/{TargetData.MOCK_PATH}/{self.mock_complement}", encoding="utf8") as file:
+            file_fullpath = f"{current_directory}/{TargetData.MOCK_PATH}/{self.mock_complement}"
+            logging.debug(f"Opening file {file_fullpath}")
+            with open(file_fullpath, encoding="utf8") as file:
                 json_content = json.load(file)
             if len(json_content) == 0:
                 logging.debug("no data on the file")
