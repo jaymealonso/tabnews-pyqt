@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PyQt5.QtCore import QSize
+from lib.improved_qtableview import ImprTableWidget
 from view.maintable import MyTable, MyToolbar
 
 def main():
@@ -15,11 +16,13 @@ def main():
     container = QWidget(window_main)
     container.setLayout(layout)
 
-    table = MyTable(window_main, window_main)
-    toolbar = MyToolbar(table)
+    # table = MyTable(window_main, window_main)
+    table_cont = MyTable(window_main)
+    toolbar = MyToolbar(window_main)
 
-    layout.addWidget(toolbar)
-    layout.addWidget(table)
+    layout.addWidget(toolbar)    
+    # layout.addWidget(table)
+    layout.addWidget(table_cont)
 
     window_main.setCentralWidget(container)
 
